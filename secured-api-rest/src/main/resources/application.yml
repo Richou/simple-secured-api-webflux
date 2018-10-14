@@ -1,0 +1,11 @@
+server:
+  port: 8000
+
+swagger:
+  title: Secured Api Webflux
+  description: Secured Api project with Webflux + JWT + MongoDB
+  termsOfServiceUrl:
+  contact: Richou
+  license: Apache licence version 2.0
+  licenseUrl:
+  version: 2.0
