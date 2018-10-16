@@ -28,6 +28,7 @@
 
     <modules>
         <module>secured-api-rest</module>
+        <module>secured-api-database</module>
     </modules>
 
     <repositories>
@@ -40,11 +41,6 @@
 
 	<dependencyManagement>
 		<dependencies>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter-data-mongodb-reactive</artifactId>
-			</dependency>
-
 			<dependency>
 				<groupId>org.projectlombok</groupId>
 				<artifactId>lombok</artifactId>
@@ -87,15 +83,5 @@
 
 		</dependencies>
 	</dependencyManagement>
-
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
-
 
 </project>

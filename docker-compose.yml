@@ -1,0 +1,54 @@
+version: '3.6'
+services:
+  db:
+    image: mongo
+    container_name: secured-api-mongo
+    networks:
+      - default
+    volumes:
+      - mongodata:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=securedapi
+      - MONGO_INITDB_ROOT_PASSWORD=securedapi
+    ports:
+      - 27017:27017
+  elastic-n1:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.4.2
+    container_name: secured-api-elastic-n1
+    networks:
+      - default
+    environment:
+      - cluster.name=docker-cluster
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ports:
+      - 9200:9200
+      - 9300:9300
+  elastic-n2:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.4.2
+    container_name: secured-api-elastic-n2
+    networks:
+      - default
+    environment:
+      - cluster.name=docker-cluster
+      - discovery.zen.ping.unicast.hosts=elastic-n1
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+  portainer:
+    image: portainer/portainer
+    container_name: secured-api-portainer
+    networks:
+    - default
+    volumes:
+    - /var/run/docker.sock:/var/run/docker.sock
+    - portainerdata:/data
+    ports:
+    - 10001:9000
+networks:
+  default:
+    driver: bridge
+volumes:
+  mongodata:
+    driver: local
+  portainerdata:
+    driver: local
+  elasticdata:
+    driver: local
