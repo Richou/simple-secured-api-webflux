@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 import springfox.documentation.swagger2.annotations.EnableSwagger2WebFlux;
@@ -35,14 +36,14 @@ public class SwaggerConfiguration {
                 .title(swagger.getTitle())
                 .description(swagger.getDescription())
                 .termsOfServiceUrl(swagger.getTermsOfServiceUrl())
-                .contact(swagger.getContact())
+                .contact(new Contact(swagger.getContact(), "", ""))
                 .license(swagger.getLicense())
                 .licenseUrl(swagger.getLicenseUrl())
                 .version(swagger.getVersion())
                 .build();
     }
 
-    static <T> Predicate<T> not(Predicate<T> input) {
+    private static <T> Predicate<T> not(Predicate<T> input) {
         return it -> !input.test(it);
     }
 

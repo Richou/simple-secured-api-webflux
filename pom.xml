@@ -29,7 +29,8 @@
     <modules>
         <module>secured-api-rest</module>
         <module>secured-api-database</module>
-    </modules>
+		<module>secured-api-core</module>
+	</modules>
 
     <repositories>
         <repository>
@@ -41,6 +42,19 @@
 
 	<dependencyManagement>
 		<dependencies>
+
+			<dependency>
+				<groupId>com.heanoria.reminders</groupId>
+				<artifactId>secured-api-core</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.heanoria.reminders</groupId>
+				<artifactId>secured-api-database</artifactId>
+				<version>${project.version}</version>
+			</dependency>
+
 			<dependency>
 				<groupId>org.projectlombok</groupId>
 				<artifactId>lombok</artifactId>
