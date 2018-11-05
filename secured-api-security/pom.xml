@@ -9,28 +9,27 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>secured-api-core</artifactId>
+    <artifactId>secured-api-security</artifactId>
 
     <dependencies>
-
         <dependency>
             <groupId>com.heanoria.reminders</groupId>
-            <artifactId>secured-api-common</artifactId>
+            <artifactId>secured-api-core</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.heanoria.reminders</groupId>
-            <artifactId>secured-api-database</artifactId>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.commons</groupId>
-            <artifactId>commons-lang3</artifactId>
+            <groupId>io.jsonwebtoken</groupId>
+            <artifactId>jjwt</artifactId>
         </dependency>
     </dependencies>
 

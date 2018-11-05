@@ -1,4 +1,4 @@
-package com.heanoria.reminders.securedapi.core.data.mappers;
+package com.heanoria.reminders.securedapi.common.mappers;
 
 import java.util.List;
 import java.util.stream.Collectors;

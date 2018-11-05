@@ -9,3 +9,8 @@ swagger:
   license: Apache licence version 2.0
   licenseUrl:
   version: 2.0
+
+secured-api:
+  keypair:
+    public-key:
+    private-key:
