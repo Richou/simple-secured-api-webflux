@@ -38,6 +38,11 @@
             <artifactId>lombok</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+        </dependency>
+
         <!-- Swagger Deps -->
         <dependency>
             <groupId>io.springfox</groupId>

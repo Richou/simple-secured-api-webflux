@@ -6,6 +6,8 @@ import com.heanoria.reminders.securedapi.security.proxies.UserServiceProxy;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Import;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.method.configuration.EnableReactiveMethodSecurity;
 import org.springframework.security.config.annotation.web.reactive.EnableWebFluxSecurity;
 import org.springframework.security.config.web.server.SecurityWebFiltersOrder;
 import org.springframework.security.config.web.server.ServerHttpSecurity;
@@ -21,15 +23,21 @@ import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
 
 @ConfigurationProperties
-@Import({KeyPairProperties.class, ProxiesConfiguration.class, TokenConfiguration.class})
+@Import({KeyPairProperties.class, ProxiesConfiguration.class, TokenConfiguration.class, ControllerConfiguration.class})
 @EnableWebFluxSecurity
+@EnableReactiveMethodSecurity
 public class SecuredApiSecurityConfiguration {
 
     private final UserServiceProxy userServiceProxy;
     private final TokenHandler tokenHandler;
 
     private static final String[] AUTH_WHITELIST = {
+            "/webjars/**",
             "/favicon.ico",
+            "/swagger-ui.html**",
+            "/v1/login",
+            "/swagger-resources/**",
+            "/v2/api-docs",
     };
 
     public SecuredApiSecurityConfiguration(UserServiceProxy userServiceProxy, TokenHandler tokenHandler) {
@@ -38,19 +46,33 @@ public class SecuredApiSecurityConfiguration {
     }
 
     @Bean
-    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http, AuthenticationWebFilter webFilter) {
-        // Disable login form
+    public UnauthorizedAuthenticationEntryPoint unauthorizedAuthenticationEntryPoint() {
+        return new UnauthorizedAuthenticationEntryPoint();
+    }
+
+    @Bean
+    public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http, AuthenticationWebFilter webFilter, UnauthorizedAuthenticationEntryPoint entryPoint) {
         http.httpBasic().disable()
                 .formLogin().disable()
                 .csrf().disable()
                 .logout().disable();
-        // Add a filter with Authorization on header   http.addFilterAt(webFilter(),SecurityWebFiltersOrder.AUTHORIZATION)
-        http.authorizeExchange()
-                // Passing a white list endpoint, do not need to
-                // authenticate
+        http
+                .exceptionHandling()
+                .authenticationEntryPoint(entryPoint)
+                .and()
+                .authorizeExchange()
+                .and()
+                .authorizeExchange()
+                .pathMatchers(HttpMethod.OPTIONS)
+                .permitAll()
+                .and()
+                .authorizeExchange()
+                .and()
+                .addFilterAt(webFilter, SecurityWebFiltersOrder.AUTHORIZATION)
+                .authorizeExchange()
                 .pathMatchers(AUTH_WHITELIST).permitAll()
-                .anyExchange().authenticated()
-                .and().addFilterAt(webFilter, SecurityWebFiltersOrder.AUTHENTICATION);
+                .anyExchange().authenticated();
+
         return http.build();
     }
 

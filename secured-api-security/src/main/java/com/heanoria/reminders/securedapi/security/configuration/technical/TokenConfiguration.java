@@ -3,7 +3,6 @@ package com.heanoria.reminders.securedapi.security.configuration.technical;
 import com.heanoria.reminders.securedapi.security.configuration.properties.KeyPairProperties;
 import com.heanoria.reminders.securedapi.security.internal.KeyPairHandler;
 import com.heanoria.reminders.securedapi.security.internal.TokenHandler;
-import com.heanoria.reminders.securedapi.security.proxies.UserServiceProxy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -26,7 +25,7 @@ public class TokenConfiguration {
     }
 
     @Bean
-    public TokenHandler tokenHandler(KeyPair keyPair, UserServiceProxy userServiceProxy) {
-        return new TokenHandler(keyPair, userServiceProxy);
+    public TokenHandler tokenHandler(KeyPair keyPair) {
+        return new TokenHandler(keyPair);
     }
 }

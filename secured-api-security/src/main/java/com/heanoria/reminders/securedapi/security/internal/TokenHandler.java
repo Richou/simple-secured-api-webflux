@@ -1,9 +1,8 @@
 package com.heanoria.reminders.securedapi.security.internal;
 
-import com.heanoria.reminders.securedapi.core.data.contexts.UserContext;
 import com.heanoria.reminders.securedapi.core.data.exceptions.ExpiredTokenException;
-import com.heanoria.reminders.securedapi.security.proxies.UserServiceProxy;
 import com.heanoria.reminders.securedapi.security.data.UserClaims;
+import com.heanoria.reminders.securedapi.security.data.UserProxy;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -26,38 +25,32 @@ public class TokenHandler {
     private static final String EMAIL_CLAIMS_KEY = "email";
     private static final String USER_ID_CLAIMS_KEY = "uid";
     private static final String USERNAME_CLAIMS_KEY = "username";
-    private static final String TOKEN_REPLACEMENT_PATTERN = "%TOKEN%";
 
-    private static final int TOKEN_EXPIRATION_DURATION = 120;
+    private static final int TOKEN_EXPIRATION_DURATION = 500;
     private static final Logger logger = LoggerFactory.getLogger(TokenHandler.class);
 
     private final KeyPair keyPair;
-    private final UserServiceProxy userServiceProxy;
-
-    public TokenHandler(KeyPair keyPair, UserServiceProxy userServiceProxy) {
+    public TokenHandler(KeyPair keyPair) {
         this.keyPair = keyPair;
-        this.userServiceProxy = userServiceProxy;
     }
 
     public String createTokenForUser(UserClaims user) {
         return Jwts.builder()
                 .setClaims(buildClaimsMap(user))
+                .setSubject(user.getEmail())
                 .setExpiration(calculateExpirationDate())
                 .signWith(SignatureAlgorithm.RS512, keyPair.getPrivate())
                 .compact();
     }
 
-    public UserContext parseMailFromToken(String token) {
-        return userServiceProxy.getUserByMail(getMailFromToken(token));
-    }
-
     public Authentication getAuthentication(String token) {
         Claims claims = getClaimsFromToken(token);
 
-        Collection<? extends GrantedAuthority> authorities =
-                Arrays.stream(claims.get(ROLES_CLAIMS_KEY).toString().split(","))
-                        .map(SimpleGrantedAuthority::new)
-                        .collect(Collectors.toList());
+        List<SimpleGrantedAuthority> authorities = Collections.emptyList();
+        if (claims.get(ROLES_CLAIMS_KEY) != null && claims.get(ROLES_CLAIMS_KEY) instanceof List) {
+            List<String> roles = (List<String>)claims.get(ROLES_CLAIMS_KEY);
+            authorities = roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
+        }
 
         User principal = new User(claims.getSubject(), "", authorities);
 
@@ -65,11 +58,11 @@ public class TokenHandler {
     }
 
     public UserClaims mapAuthenticationToUserClaims(Authentication auth) {
+        if (auth instanceof UserAuthentication) {
+            UserProxy details = ((UserAuthentication) auth).getDetails();
+            return UserClaims.builder().id(details.getId()).email(details.getEmail()).username(details.getUsername()).roles(details.getAuthorities() != null ? details.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()): Collections.emptyList()).build();
+        }
         return UserClaims.builder().build();
-    }
-
-    private String getMailFromToken(String token) {
-        return (String) getClaimsFromToken(token).get(EMAIL_CLAIMS_KEY);
     }
 
     private Claims getClaimsFromToken(String token) {

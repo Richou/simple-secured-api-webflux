@@ -19,5 +19,5 @@ public class UserEntity {
     private String password;
     private String email;
     private Set<ArticleEntity> articles;
-    private Set<RoleEntity> authorities;
+    private Set<String> authorities;
 }
