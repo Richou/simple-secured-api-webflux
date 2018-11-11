@@ -43,18 +43,12 @@ public class TokenHandler {
                 .compact();
     }
 
-    public Authentication getAuthentication(String token) {
-        Claims claims = getClaimsFromToken(token);
+    public String getEmailFromToken(String token) {
+        return getClaimsFromToken(token).get(EMAIL_CLAIMS_KEY, String.class);
+    }
 
-        List<SimpleGrantedAuthority> authorities = Collections.emptyList();
-        if (claims.get(ROLES_CLAIMS_KEY) != null && claims.get(ROLES_CLAIMS_KEY) instanceof List) {
-            List<String> roles = (List<String>)claims.get(ROLES_CLAIMS_KEY);
-            authorities = roles.stream().map(SimpleGrantedAuthority::new).collect(Collectors.toList());
-        }
-
-        User principal = new User(claims.getSubject(), "", authorities);
-
-        return new UsernamePasswordAuthenticationToken(principal, token, authorities);
+    public UUID getIdFromToken(String token) {
+        return UUID.fromString(getClaimsFromToken(token).get(USER_ID_CLAIMS_KEY, String.class));
     }
 
     public UserClaims mapAuthenticationToUserClaims(Authentication auth) {

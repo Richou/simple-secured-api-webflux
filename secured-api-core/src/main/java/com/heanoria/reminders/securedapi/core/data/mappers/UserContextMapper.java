@@ -10,12 +10,6 @@ import java.util.stream.Collectors;
 
 public class UserContextMapper implements SingleMapper<UserEntity, UserContext> {
 
-    private final RoleContextMapper roleContextMapper;
-
-    public UserContextMapper() {
-        this.roleContextMapper = new RoleContextMapper();
-    }
-
     @Override
     public UserContext map(UserEntity input) {
         if (input == null) return null;

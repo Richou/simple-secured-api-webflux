@@ -1,5 +1,6 @@
 package com.heanoria.reminders.securedapi.security.internal;
 
+import com.heanoria.reminders.securedapi.security.proxies.UserServiceProxy;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
@@ -11,14 +12,13 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 public class TokenAuthenticationConverter implements Function<ServerWebExchange, Mono<Authentication>> {
-    private static final String BEARER = "Bearer ";
-    private static final Predicate<String> matchBearerLength = authValue -> authValue.length() > BEARER.length();
-    private static final Function<String, String> isolateBearerValue = authValue -> authValue.substring(BEARER.length(), authValue.length());
 
     private final TokenHandler tokenHandler;
+    private final UserServiceProxy userServiceProxy;
 
-    public TokenAuthenticationConverter(TokenHandler tokenHandler) {
+    public TokenAuthenticationConverter(TokenHandler tokenHandler, UserServiceProxy userServiceProxy) {
         this.tokenHandler = tokenHandler;
+        this.userServiceProxy = userServiceProxy;
     }
 
     @Override
@@ -26,10 +26,11 @@ public class TokenAuthenticationConverter implements Function<ServerWebExchange,
         return Mono.justOrEmpty(serverWebExchange)
                 .map(this::getTokenFromRequest)
                 .filter(Objects::nonNull)
-                .filter(matchBearerLength)
-                .map(isolateBearerValue)
                 .filter(token -> !StringUtils.isEmpty(token))
-                .map(tokenHandler::getAuthentication)
+                .map(tokenHandler::getEmailFromToken)
+                .flatMap(this.userServiceProxy::findByEmail)
+                .map(UserAuthentication::new)
+                .map(UserAuthentication::getAuthentication)
                 .filter(Objects::nonNull);
     }
 

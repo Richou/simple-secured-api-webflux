@@ -17,11 +17,6 @@ import org.springframework.security.web.server.SecurityWebFilterChain;
 import org.springframework.security.web.server.authentication.AuthenticationWebFilter;
 import org.springframework.security.web.server.context.WebSessionServerSecurityContextRepository;
 
-import java.io.IOException;
-import java.security.KeyPair;
-import java.security.NoSuchAlgorithmException;
-import java.security.spec.InvalidKeySpecException;
-
 @ConfigurationProperties
 @Import({KeyPairProperties.class, ProxiesConfiguration.class, TokenConfiguration.class, ControllerConfiguration.class})
 @EnableWebFluxSecurity
@@ -84,7 +79,7 @@ public class SecuredApiSecurityConfiguration {
     @Bean
     public AuthenticationWebFilter webFilter(AuthentManager authentManager) {
         AuthenticationWebFilter authenticationWebFilter = new AuthenticationWebFilter(authentManager);
-        authenticationWebFilter.setAuthenticationConverter(new TokenAuthenticationConverter(tokenHandler));
+        authenticationWebFilter.setAuthenticationConverter(new TokenAuthenticationConverter(tokenHandler, userServiceProxy));
         authenticationWebFilter.setRequiresAuthenticationMatcher(new AuthentHeadersExchangeMatcher());
         authenticationWebFilter.setSecurityContextRepository(new WebSessionServerSecurityContextRepository());
         return authenticationWebFilter;

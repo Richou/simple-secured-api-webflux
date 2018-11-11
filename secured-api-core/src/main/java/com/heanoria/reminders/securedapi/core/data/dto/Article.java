@@ -19,7 +19,7 @@ public class Article {
     private final UUID id;
     private final String title;
     private final String content;
-    private final User author;
+    private final UUID authorId;
     private final Date createDate;
     private final Date updateDate;
 

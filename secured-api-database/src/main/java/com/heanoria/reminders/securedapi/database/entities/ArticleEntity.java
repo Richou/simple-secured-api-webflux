@@ -9,7 +9,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @Data
-@Builder
+@Builder(toBuilder = true)
 @Document(collection = "articles")
 public class ArticleEntity {
     @Id
@@ -17,7 +17,7 @@ public class ArticleEntity {
     private UUID uid;
     private String title;
     private String content;
-    private UserEntity author;
+    private UUID authorId;
     private Date createDate;
     private Date updateDate;
 }
