@@ -1,2 +1,16 @@
 server:
   port: 8001
+
+
+secured-api:
+  keypair:
+    public-key: /home/richard/opt/secured-api/security/public_key.der
+    private-key: /home/richard/opt/secured-api/security/private_key.der
+
+spring:
+  data:
+    mongodb:
+      authentication-database: admin
+      database: securedapi
+      username: securedapi
+      password: securedapi

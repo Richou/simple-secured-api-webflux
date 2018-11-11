@@ -6,18 +6,13 @@ import lombok.Builder;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.Set;
-import java.util.UUID;
-
 @Data
 @Builder
-@JsonDeserialize(builder = User.UserBuilder.class)
-public class User {
-    private final UUID id;
-    private final String username;
+@JsonDeserialize(builder = Credentials.CredentialsBuilder.class)
+public class Credentials {
     private final String email;
-    private final Set<String> authorities;
+    private final String password;
 
     @JsonPOJOBuilder(withPrefix = StringUtils.EMPTY)
-    public static class UserBuilder {}
+    public final static class CredentialsBuilder {}
 }

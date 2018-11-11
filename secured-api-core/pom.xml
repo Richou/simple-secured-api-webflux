@@ -12,6 +12,12 @@
     <artifactId>secured-api-core</artifactId>
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.heanoria.reminders</groupId>
+            <artifactId>secured-api-common</artifactId>
+        </dependency>
+
         <dependency>
             <groupId>com.heanoria.reminders</groupId>
             <artifactId>secured-api-database</artifactId>
