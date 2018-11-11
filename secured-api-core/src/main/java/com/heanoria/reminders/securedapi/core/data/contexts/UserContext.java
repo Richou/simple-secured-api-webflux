@@ -14,5 +14,5 @@ public class UserContext {
     private final String email;
     private final String username;
     private final String password;
-    private final List<RoleContext> authorities;
+    private final List<String> authorities;
 }
