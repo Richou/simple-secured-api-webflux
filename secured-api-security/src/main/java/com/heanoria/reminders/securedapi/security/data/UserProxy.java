@@ -18,7 +18,7 @@ public class UserProxy implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return userContext.getAuthorities().stream().map(it -> (GrantedAuthority) it::getAuthority).collect(Collectors.toList());
+        return userContext.getAuthorities().stream().map(it -> (GrantedAuthority) () -> it).collect(Collectors.toList());
     }
 
     public UUID getId() {

@@ -2,8 +2,11 @@ package com.heanoria.reminders.securedapi.rest.controllers;
 
 import com.heanoria.reminders.securedapi.core.data.dto.Article;
 import com.heanoria.reminders.securedapi.core.data.dto.ArticleCreate;
+import com.heanoria.reminders.securedapi.core.data.dto.ArticleSearchCriteria;
 import com.heanoria.reminders.securedapi.core.data.dto.ArticleUpdate;
 import com.heanoria.reminders.securedapi.core.services.ArticleService;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
@@ -22,8 +25,11 @@ public class ArticleController {
     }
 
     @GetMapping("/articles")
-    public Flux<Article> doGetArticles(@RequestHeader("Authorization") String authorization) {
-        return Flux.just(Article.builder().id(UUID.randomUUID()).title("The First Article").build(), Article.builder().id(UUID.randomUUID()).title("The Second Article").build());
+    public Flux<Article> doGetArticles(ArticleSearchCriteria criteria) {
+        if (criteria.getTitle() != null) {
+            return this.articleService.findAllByTitle(criteria.getTitle(), PageRequest.of(criteria.getPage() != null ? criteria.getPage() : 0, criteria.getSize() != null ? criteria.getSize() : 20));
+        }
+        return this.articleService.findAll();
     }
 
     @GetMapping("/articles/{id}")
