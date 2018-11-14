@@ -17,6 +17,16 @@ public class ArticleSearchCriteria {
     private final Integer page;
     private final Integer size;
 
+    public Integer getPage() {
+        if (page == null) return 0;
+        return page;
+    }
+
+    public Integer getSize() {
+        if (size == null) return 20;
+        return size;
+    }
+
     @JsonPOJOBuilder(withPrefix = StringUtils.EMPTY)
     public static final class ArticleSearchCriteriaBuilder {}
 }

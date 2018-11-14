@@ -18,6 +18,8 @@ public class ArticleCreateMapper implements SingleMapper<ArticleCreate, ArticleE
     @Override
     public ArticleEntity map(ArticleCreate input) {
         if (input == null) return null;
-        return ArticleEntity.builder().uid(UUID.randomUUID()).content(input.getContent()).title(input.getTitle()).authorId(authorId).createDate(new Date()).updateDate(new Date()).build();
+        return ArticleEntity.builder().uid(UUID.randomUUID())
+                .content(input.getContent()).title(input.getTitle()).authorId(authorId)
+                .createDate(new Date()).updateDate(new Date()).build();
     }
 }
